@@ -1,0 +1,30 @@
+#!/bin/sh
+# Copyright (C) 2000-2020 Synology Inc. / 007revad All rights reserved.
+LOG="/tmp/$SYNOPKG_PKGNAME.log"
+case $1 in
+	start)
+		### Start this package.
+		ScriptNotify "Start"
+		echo "$(date '+%Y-%m-%d %H:%M:%S'): $0: The package has been started" >> $LOG
+		exit 0
+	;;
+	stop)
+		### Stop this package.
+		ScriptNotify "Stop"
+		echo -e "\n$(date '+%Y-%m-%d %H:%M:%S'): $0: The package has been stopped" >> $LOG
+		exit 0
+	;;
+	status)
+		### Check package alive.
+		#if [ -h "/usr/local/bin/ScriptNotify" ]; then
+			exit 0
+		#else
+		#	exit 1
+		#fi
+	;;
+	killall)
+        ;;
+	log)
+		exit 0
+	;;
+esac
