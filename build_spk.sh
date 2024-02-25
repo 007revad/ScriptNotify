@@ -30,5 +30,5 @@ echo "Building SPK"
 tar -C ./package/ -czf ./package.tgz .
 chmod 755 ./package.tgz
 #tar --exclude="package/*" --exclude="build_spk.sh" --exclude=".git/*" --exclude=".gitignore/*" --exclude="README.md" --exclude="README_en.md" -cvf ${package}_${version}.spk *
-tar --exclude="package" --exclude="build_spk.sh" --exclude="CHANGE.LOG" --exclude=".git/*" --exclude=".gitignore/*" --exclude="README.md" --exclude="README_en.md" -cvf "${package}_${version}.spk"
+tar --exclude="package" --exclude="build_spk.sh" --exclude="CHANGE.LOG" --exclude=".git/*" --exclude=".gitignore/*" --exclude="README.md" --exclude="README_en.md" -cvf "${package}_${version}.spk" *
 rm -f package.tgz
