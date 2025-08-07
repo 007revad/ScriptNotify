@@ -1,9 +1,0 @@
-[app]
-title="Script Notify for DSM 7"
-msg="{0}"
-title1="{0}"
-title2="{0} {1}"
-title3="{0} {1} {2}"
-msg1="{0}"
-msg2="{0} {1}"
-msg3="{0} {1} {2}"
