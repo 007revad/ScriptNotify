@@ -1,0 +1,73 @@
+<!-- @format -->
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>{{ @displayname }}</title>
+
+        <link
+            href="../../../../help/help.css"
+            type="text/css"
+            rel="stylesheet"
+        />
+        <link
+            href="../../../../help/scrollbar/flexcroll.css"
+            type="text/css"
+            rel="stylesheet"
+        />
+        <script
+            type="text/javascript"
+            src="../../../../help/scrollbar/flexcroll.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="../../../../help/scrollbar/initFlexcroll.js"
+        ></script>
+    </head>
+
+    <body>
+        <h1>{{ @app:displayname }}</h1>
+
+        <p>{{ @app:description }}</p>
+
+        <div class="section">
+            <h4>Note:</h4>
+            <ul>
+                <li>
+                    {{ @app:displayname }} is dependent on the
+                    <a
+                        href="https://kb.synology.com/DSM/help/Docker/docker_desc?version=7"
+                        target="_blank"
+                        >Container Manager</a
+                    >
+                    package.
+                </li>
+            </ul>
+        </div>
+
+        <h4>To see status and usage:</h4>
+
+        <ol>
+            <li>
+                Launch <strong>Container Manager</strong> and click on
+                <strong>Container</strong> (the package icon) on the toolbar.
+            </li>
+            <li>
+                Find and select the desired container, and click
+                <strong>Details</strong>.
+            </li>
+            <li>Navigate through the tabs to view the container's details.</li>
+            <li>
+                Click <strong>Journal</strong> to view the container's logs.
+            </li>
+            <li>
+                Click <strong>Stats</strong> to view the container's resource
+                usage.
+            </li>
+        </ol>
+    </body>
+</html>

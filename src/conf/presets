@@ -1,0 +1,13 @@
+{
+  "docker": {
+    "IMAGE_NAME": "samplepackage",
+    "CONTAINER_NAME": "samplepackage",
+    "SERVICE_SCRIPT": "/var/packages/Samplepackage/target/bin/sample_run.sh"
+  },
+  "shell": {
+    "SERVICE_SCRIPT": "/var/packages/Samplepackage/target/bin/sample_run.sh",
+    "SERVICE_USER": "root",
+    "LOG_FILE": "/var/packages/Samplepackage/var/samplep_package.log",
+    "PID_FILE": "/var/packages/Samplepackage/var/samplep_package.pid"
+  }
+}

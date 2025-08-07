@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Storage Panel Manager</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="storage_panel.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗄️ Storage Panel Manager</h1>
+            <div class="subtitle">Advanced Storage Configuration Tool</div>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <strong>📊 Current System Information</strong>
+                <div class="system-info">
+                    <div class="info-item">
+                        <div class="info-label">Unique ID</div>
+                        <div class="info-value" id="unique-id">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Build Number</div>
+                        <div class="info-value" id="build-number">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value" id="system-status">Ready</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="status-message" class="status-message"></div>
+            
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="hdd_bay">🗄️ HDD Bay Configuration:</label>
+                    <select id="hdd_bay" required>
+                        <option value="">Select HDD Bay Type</option>
+                        <option value="RACK_0_Bay">RACK 0 Bay</option>
+                        <option value="RACK_2_Bay">RACK 2 Bay</option>
+                        <option value="RACK_4_Bay">RACK 4 Bay</option>
+                        <option value="RACK_8_Bay">RACK 8 Bay</option>
+                        <option value="RACK_10_Bay">RACK 10 Bay</option>
+                        <option value="RACK_12_Bay">RACK 12 Bay</option>
+                        <option value="RACK_12_Bay_2">RACK 12 Bay (Version 2)</option>
+                        <option value="RACK_16_Bay">RACK 16 Bay</option>
+                        <option value="RACK_20_Bay">RACK 20 Bay</option>
+                        <option value="RACK_24_Bay">RACK 24 Bay (Default)</option>
+                        <option value="RACK_60_Bay">RACK 60 Bay</option>
+                        <option value="TOWER_1_Bay">TOWER 1 Bay</option>
+                        <option value="TOWER_2_Bay">TOWER 2 Bay</option>
+                        <option value="TOWER_4_Bay">TOWER 4 Bay</option>
+                        <option value="TOWER_4_Bay_J">TOWER 4 Bay J</option>
+                        <option value="TOWER_4_Bay_S">TOWER 4 Bay S</option>
+                        <option value="TOWER_5_Bay">TOWER 5 Bay</option>
+                        <option value="TOWER_6_Bay">TOWER 6 Bay</option>
+                        <option value="TOWER_8_Bay">TOWER 8 Bay</option>
+                        <option value="TOWER_12_Bay">TOWER 12 Bay</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ssd_bay">💽 SSD Bay Configuration (Rows × Columns):</label>
+                    <select id="ssd_bay" required>
+                        <option value="">Select SSD Bay Layout</option>
+                        <option value="1X1">1×1 (1 SSD)</option>
+                        <option value="1X2">1×2 (2 SSDs)</option>
+                        <option value="1X3">1×3 (3 SSDs)</option>
+                        <option value="1X4">1×4 (4 SSDs)</option>
+                        <option value="1X6">1×6 (6 SSDs)</option>
+                        <option value="1X8">1×8 (8 SSDs)</option>
+                        <option value="2X2">2×2 (4 SSDs)</option>
+                        <option value="2X3">2×3 (6 SSDs)</option>
+                        <option value="2X4">2×4 (8 SSDs)</option>
+                        <option value="2X6">2×6 (12 SSDs)</option>
+                        <option value="2X8">2×8 (16 SSDs)</option>
+                        <option value="3X4">3×4 (12 SSDs)</option>
+                        <option value="4X4">4×4 (16 SSDs)</option>
+                    </select>
+                <div id="preview-area" style="margin-top:30px; text-align:center;">
+                    <div id="hdd-preview" style="display:inline-block; vertical-align:top;"></div>
+                    <div id="ssd-preview" style="display:inline-block; vertical-align:top; margin-left:30px;"></div>
+                </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="applyConfiguration()">
+                    ✨ Apply Configuration
+                </button>
+                <button type="button" class="btn-secondary" onclick="restoreConfiguration()">
+                    🔄 Restore Original
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // HDD 이미지 매핑
+        const hddImageMap = {
+            'RACK_0_Bay': 'model_0bay_rack.png',
+            'RACK_2_Bay': 'model_2bay_rack.png',
+            'RACK_4_Bay': 'model_4bay_rack.png',
+            'RACK_8_Bay': 'model_8bay_rack.png',
+            'RACK_10_Bay': 'model_10bay_rack.png',
+            'RACK_12_Bay': 'model_12bay_rack.png',
+            'RACK_12_Bay_2': 'model_12bay_2_rack.png',
+            'RACK_16_Bay': 'model_16bay_rack.png',
+            'RACK_20_Bay': 'model_20bay_rack.png',
+            'RACK_24_Bay': 'model_24bay_rack.png',
+            'RACK_60_Bay': 'model_60bay_rack.png',
+            'TOWER_1_Bay': 'model_1bay_tower.png',
+            'TOWER_2_Bay': 'model_2bay_tower.png',
+            'TOWER_4_Bay': 'model_4bay_tower.png',
+            'TOWER_4_Bay_J': 'model_4bay_tower_J.png',
+            'TOWER_4_Bay_S': 'model_4bay_tower_Slim.png',
+            'TOWER_5_Bay': 'model_5bay_tower.png',
+            'TOWER_6_Bay': 'model_6bay_tower.png',
+            'TOWER_8_Bay': 'model_8bay_tower.png',
+            'TOWER_12_Bay': 'model_12bay_tower.png',
+        };
+
+        // SSD 이미지 매핑
+        const ssdImageMap = {
+            '1X1': '1X1.png',
+            '1X2': '1X2.png',
+            '1X3': '1X3.png',
+            '1X4': '1X4.png',
+            '1X6': '1X6.png',
+            '1X8': '1X8.png',
+            '2X2': '2X2.png',
+            '2X3': '2X3.png',
+            '2X4': '2X4.png',
+            '2X6': '2X6.png',
+            '2X8': '2X8.png',
+            '3X4': '3X4.png',
+            '4X4': '4X4.png',
+        };
+
+        function getSSDLayoutPreview(ssdVal) {
+            if (!ssdVal || !ssdImageMap[ssdVal]) return '';
+            return `<img src="templates/images/${ssdImageMap[ssdVal]}" alt="${ssdVal}" style="max-width:180px;max-height:120px;border-radius:10px;border:1px solid #ccc;box-shadow:0 2px 8px #0002;">`;
+        }
+
+        // 베이 타입별 베이 개수 매핑
+        const hddBayCountMap = {
+            'RACK_0_Bay': 0,
+            'RACK_2_Bay': 2,
+            'RACK_4_Bay': 4,
+            'RACK_8_Bay': 8,
+            'RACK_10_Bay': 10,
+            'RACK_12_Bay': 12,
+            'RACK_12_Bay_2': 12,
+            'RACK_16_Bay': 16,
+            'RACK_20_Bay': 20,
+            'RACK_24_Bay': 24,
+            'RACK_60_Bay': 60,
+            'TOWER_1_Bay': 1,
+            'TOWER_2_Bay': 2,
+            'TOWER_4_Bay': 4,
+            'TOWER_4_Bay_J': 4,
+            'TOWER_4_Bay_S': 4,
+            'TOWER_5_Bay': 5,
+            'TOWER_6_Bay': 6,
+            'TOWER_8_Bay': 8,
+            'TOWER_12_Bay': 12,
+        };
+
+        function getHDDPreview(hddVal) {
+            if (!hddVal || !hddImageMap[hddVal]) return '';
+            const bayCount = hddBayCountMap[hddVal] || 0;
+            let overlay = '';
+            if (bayCount > 0) {
+                // 베이 아이콘을 이미지 위에 오버레이
+                overlay += `<div style="position:relative;display:inline-block;">`;
+                overlay += `<img src="templates/images/${hddImageMap[hddVal]}" alt="${hddVal}" style="max-width:180px;max-height:120px;border-radius:10px;border:1px solid #ccc;box-shadow:0 2px 8px #0002;">`;
+                // 베이 아이콘들 (가로로 배치, 2줄 이상은 자동 줄바꿈)
+                overlay += `<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;pointer-events:none;">`;
+                //for (let i = 0; i < bayCount; i++) {
+                //    overlay += `<span style="width:22px;height:22px;margin:2px;background:#fff;border:2px solid #2196F3;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 1px 4px #0002;">🗄️</span>`;
+                //}
+                overlay += `</div></div>`;
+            } else {
+                overlay += `<img src="templates/images/${hddImageMap[hddVal]}" alt="${hddVal}" style="max-width:180px;max-height:120px;border-radius:10px;border:1px solid #ccc;box-shadow:0 2px 8px #0002;">`;
+            }
+            return overlay;
+        }
+
+        function updatePreview() {
+            const hddVal = document.getElementById('hdd_bay').value;
+            const ssdVal = document.getElementById('ssd_bay').value;
+            const hddPreview = document.getElementById('hdd-preview');
+            const ssdPreview = document.getElementById('ssd-preview');
+            // HDD 미리보기
+            hddPreview.innerHTML = getHDDPreview(hddVal);
+            // SSD 미리보기
+            if (ssdVal) {
+                ssdPreview.innerHTML = getSSDLayoutPreview(ssdVal);
+            } else {
+                ssdPreview.innerHTML = '';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('hdd_bay').addEventListener('change', updatePreview);
+            document.getElementById('ssd_bay').addEventListener('change', updatePreview);
+            updatePreview();
+        });
+
+        // Load system information on page load
+        window.addEventListener('load', function() {
+            loadSystemInfo();
+        });
+
+        function loadSystemInfo() {
+            fetch('/webman/3rdparty/Changepanelsize/api.cgi?action=info')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('unique-id').textContent = data.unique || 'Unknown';
+                    document.getElementById('build-number').textContent = data.build || 'Unknown';
+                    document.getElementById('system-status').textContent = 'Ready';
+                })
+                .catch(error => {
+                    document.getElementById('unique-id').textContent = 'Error loading';
+                    document.getElementById('build-number').textContent = 'Error loading';
+                    document.getElementById('system-status').textContent = 'Error';
+                    console.error('Error loading system info:', error);
+                });
+        }
+
+        function showStatus(message, isError = false) {
+            const statusElement = document.getElementById('status-message');
+            statusElement.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+            statusElement.textContent = message;
+            statusElement.style.display = 'block';
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(button, originalText) {
+            button.innerHTML = '<span class="loading"></span>' + 'Processing...';
+            button.disabled = true;
+        }
+
+        function hideLoading(button, originalText) {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+
+        function applyConfiguration() {
+            const hddBay = document.getElementById('hdd_bay').value;
+            const ssdBay = document.getElementById('ssd_bay').value;
+            const button = event.target;
+            const originalText = button.innerHTML;
+
+            if (!hddBay || !ssdBay) {
+                showStatus('Please select both HDD Bay and SSD Bay configurations.', true);
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to apply the following configuration?\n\nHDD Bay: ${hddBay}\nSSD Bay: ${ssdBay}\n\nThis will modify system files.`)) {
+                return;
+            }
+
+            showLoading(button, originalText);
+
+            const formData = `action=apply&hdd_bay=${encodeURIComponent(hddBay)}&ssd_bay=${encodeURIComponent(ssdBay)}`;
+
+            fetch('/webman/3rdparty/Changepanelsize/api.cgi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading(button, originalText);
+                if (data.success) {
+                    showStatus(`✅ Configuration applied successfully! HDD: ${hddBay}, SSD: ${ssdBay}`, false);
+                    document.getElementById('system-status').textContent = 'Modified';
+                } else {
+                    showStatus(`❌ Error: ${data.message || 'Unknown error occurred'}`, true);
+                }
+            })
+            .catch(error => {
+                hideLoading(button, originalText);
+                showStatus('❌ Network error occurred. Please try again.', true);
+                console.error('Error:', error);
+            });
+        }
+
+        function restoreConfiguration() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+
+            if (!confirm('Are you sure you want to restore the original storage panel configuration?\n\nThis will revert all changes made by this tool.')) {
+                return;
+            }
+
+            showLoading(button, originalText);
+
+            fetch('/webman/3rdparty/Changepanelsize/api.cgi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=restore'
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading(button, originalText);
+                if (data.success) {
+                    showStatus('✅ Original configuration restored successfully!', false);
+                    document.getElementById('system-status').textContent = 'Restored';
+                    document.getElementById('hdd_bay').value = '';
+                    document.getElementById('ssd_bay').value = '';
+                } else {
+                    showStatus(`❌ Error: ${data.message || 'Unknown error occurred'}`, true);
+                }
+            })
+            .catch(error => {
+                hideLoading(button, originalText);
+                showStatus('❌ Network error occurred. Please try again.', true);
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

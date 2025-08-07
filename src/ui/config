@@ -1,0 +1,14 @@
+{
+  ".url": {
+    "SYNO.SDS.Samplepackage": {
+      "type"       : "url",
+      "icon"       : "images/icon_256.png",
+      "title"      : "Sample Package",
+      "desc"       : "Sample package",
+      "url"        : "webman/3rdparty/Samplepackage/index.html",        
+      "width"      : 800,
+      "height"     : 600,
+      "allUsers"   : true
+    }
+  }
+}

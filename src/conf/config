@@ -1,0 +1,11 @@
+{
+  "service": {
+    "type": "shell",
+    "script": "sample_run.sh",
+    "daemon_mode": true
+  },
+  "package": {
+    "name": "SamplePackage",
+    "version": "1.0.0"
+  }
+}
