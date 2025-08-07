@@ -1,0 +1,45 @@
+name: Build n Release Synology Custom Package
+
+on:
+  release:
+    types: [published]
+
+  workflow_dispatch:
+    
+jobs:
+    build-spk:
+        name: Build Package
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                arch: ['kvmx64']
+                dsm: ['7.0','7.1','7.2']
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Synology Package Builder Github Action
+              uses: tomgrv/synology-package-builder@v1.3.0
+              with:
+                  dsm: ${{ matrix.dsm }}
+                  arch: ${{ matrix.arch }}
+                  output: ./dist
+            - name: Remove debug spk and rename package
+              run: |
+                ls -l ./dist
+                rm ./dist/*_debug.spk
+                for f in ./dist/*.spk; do
+                  mv "$f" "${f%.spk}-${{ matrix.dsm }}.spk"
+                done
+                ls -l ./dist
+            - name: Upload Package
+              uses: actions/upload-artifact@v4
+              with:
+                  name: SynoSmartInfo-${{ matrix.dsm }}
+                  path: ./dist/*.spk
+            - name: Release
+              uses: softprops/action-gh-release@v2
+              with:
+                tag_name: ${{ inputs.version }}
+                files: |
+                  ./dist/*.spk
