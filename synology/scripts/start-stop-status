@@ -55,7 +55,7 @@ case "$1" in
         if [ ! -x "${SERVICE_SCRIPT}" ]; then
             chmod +x "${SERVICE_SCRIPT}"
         fi
-        
+: <<'END'        
         # Run backgound demon mode
         nohup "${SERVICE_SCRIPT}" daemon >/dev/null 2>&1 &
         SERVICE_PID=$!
@@ -76,7 +76,8 @@ case "$1" in
         log_message "Failed to start Sample Package service"
         exit 1
         ;;
-        
+END
+exit 0
     stop)
         log_message "Stopping Sample Package service..."
         
