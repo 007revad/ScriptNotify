@@ -6,8 +6,8 @@ TARGET_DIR="${PKG_ROOT}/target"
 BIN_DIR="${TARGET_DIR}/bin"
 SERVICE_SCRIPT="${BIN_DIR}/sample_run.sh"
 VAR_DIR="${PKG_ROOT}/var"
-PID_FILE="${VAR_DIR}/sample_package.pid"
-LOG_FILE="${VAR_DIR}/sample_package.log"
+PID_FILE="${VAR_DIR}/samplepackage.pid"
+LOG_FILE="${VAR_DIR}/samplepackage.log"
 
 # Log Function
 log_message() {
@@ -68,17 +68,17 @@ case "$1" in
         for i in 1 2 3 4 5; do
             sleep 1
             if is_service_running; then
-                log_message "Change Panel Size service started successfully"
+                log_message "Sample Package service started successfully"
                 exit 0
             fi
         done
         
-        log_message "Failed to start Change Panel Size service"
+        log_message "Failed to start Sample Package service"
         exit 1
         ;;
         
     stop)
-        log_message "Stopping Change Panel Size service..."
+        log_message "Stopping Sample Package service..."
         
         if [ -f "${PID_FILE}" ]; then
             PID=$(cat "${PID_FILE}")
@@ -114,10 +114,10 @@ case "$1" in
     status)
         if is_service_running; then
             PID=$(cat "${PID_FILE}")
-            echo "Change Panel Size service is running (PID ${PID})"
+            echo "Sample Package service is running (PID ${PID})"
             exit 0
         else
-            echo "Change Panel Size service is not running"
+            echo "Sample Package service is not running"
             exit 1
         fi
         ;;
