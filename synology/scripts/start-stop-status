@@ -75,9 +75,9 @@ case "$1" in
         
         log_message "Failed to start Sample Package service"
         exit 1
-        ;;
 END
 exit 0
+        ;;
     stop)
         log_message "Stopping Sample Package service..."
         
