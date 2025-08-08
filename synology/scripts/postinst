@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Post-installation script for Sample Package
+# Creates necessary directories and symlinks for web interface
+
+PKG_NAME=$(basename "$SYNOPKG_PKGDEST")
+TARGET_DIR="/var/packages/$PKG_NAME/target"
+BIN_DIR="$TARGET_DIR/bin"
+VAR_DIR="/var/packages/$PKG_NAME/var"
+
+echo "Post-installation starting for package: $PKG_NAME"
+echo "Package destination: $SYNOPKG_PKGDEST"
+echo "Target directory: $TARGET_DIR"
+
+# Create variable directory with error handling
+mkdir -p "$VAR_DIR" || { echo "Failed to create VAR_DIR: $VAR_DIR"; exit 1; }
+
+# Log function for installation process
+log_message() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$VAR_DIR/install.log" 2>/dev/null || echo "$1"
+}
+
+log_message "Post-installation started"
+
+# Create symlink for web interface integration with DSM
+if ln -sf "/var/packages/$PKG_NAME/target/ui" "/usr/syno/synoman/webman/3rdparty/$PKG_NAME" 2>/dev/null; then
+    log_message "Created web interface symlink successfully"
+else
+    log_message "Warning: Failed to create web interface symlink"
+fi
+
+# Create and configure main log file
+touch "$VAR_DIR/$PKG_NAME.log" 2>/dev/null && \
+chmod 644 "$VAR_DIR/$PKG_NAME.log" 2>/dev/null && \
+log_message "Created and configured main log file"
+
+# Give execute permissions to all .sh and .cgi scripts under target/bin and target/ui
+find "$TARGET_DIR/bin" -type f \( -name "*.sh" -o -name "*.cgi" \) -exec chmod 755 {} \; 2>/dev/null
+find "$TARGET_DIR/ui" -type f -name "*.cgi" -exec chmod 755 {} \; 2>/dev/null
+
+# Give execute permission to all binaries in bin directory
+if [ -d "$TARGET_DIR/bin" ]; then
+    find "$TARGET_DIR/bin" -type f ! -name "*.txt" -exec chmod 755 {} \; 2>/dev/null
+fi
+
+# Give execute permissions to additional script types if used (e.g., .py, .pl)
+find "$TARGET_DIR/bin" "$TARGET_DIR/ui" -type f \( -name "*.py" -o -name "*.pl" \) -exec chmod 755 {} \; 2>/dev/null
+
+log_message "Post-installation completed successfully"
+echo "Post-installation completed successfully"
+
+exit 0

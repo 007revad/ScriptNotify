@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Pre-uninstall script 
+echo "Pre-uninstall starting..."
+
+# Handle presets first (if any)
+if [ -x "$(dirname $0)/_presets" ]; then
+    "$(dirname $0)"/_presets $0 "$@" || echo "Presets script failed, continuing..."
+fi
+
+echo "Pre-uninstall completed."
+exit 0

@@ -1,0 +1,4 @@
+[app]
+description                 = "Document Viewer displays documents of various types, from Microsoft Office to OpenOffice, with ease and rapidity. You can even share documents simply with an encryptable link."
+displayname                 = "Document Viewer"
+install_complete_message    = "{0} successfully installed. Click {1}here{2} to enable document thumbnails and pre-conversion for quick browsing."

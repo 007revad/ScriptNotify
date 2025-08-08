@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Pre-installation script for Change Panel Size
+echo "Pre-installation check starting..."
+
+# Handle presets first (if any) 
+if [ -x "$(dirname $0)/_presets" ]; then
+    "$(dirname $0)"/_presets $0 "$@" || echo "Presets script failed, continuing..."
+fi
+
+if [ "$(id -u)" != "0" ]; then
+    echo "Warning: This package works best with root privileges."
+    # exit 1 
+fi
+
+MISSING_COMMANDS=""
+for cmd in bash sh mkdir chmod ln; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        MISSING_COMMANDS="$MISSING_COMMANDS $cmd"
+    fi
+done
+
+if [ -n "$MISSING_COMMANDS" ]; then
+    echo "Warning: Some required commands are missing:$MISSING_COMMANDS"
+    echo "Installation may fail. Please ensure these commands are available."
+fi
+
+echo "Pre-installation check completed."
+exit 0

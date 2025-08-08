@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# remove symlink
+rm -f /usr/syno/synoman/webman/3rdparty/Changepanelsize
+
+exit 0
+

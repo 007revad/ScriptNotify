@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# Main start/stop/status script for Sample Package
+# This package only provides web interface - no background daemon required
+
+PKG_ROOT="/var/packages/Samplepackage"
+TARGET_DIR="${PKG_ROOT}/target"
+VAR_DIR="${PKG_ROOT}/var"
+LOG_FILE="${VAR_DIR}/samplepackage.log"
+
+# Log function - creates log directory if needed
+log_message() {
+    mkdir -p "${VAR_DIR}"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "${LOG_FILE}"
+}
+
+# Handle presets first (if any)
+if [ -x "$(dirname $0)/_presets" ]; then
+    "$(dirname $0)"/_presets $0 "$@"
+fi
+
+case "$1" in
+    start)
+        log_message "Sample Package web interface started - no background service required"
+        # Web interface only - no daemon process needed
+        mkdir -p "${VAR_DIR}"
+        exit 0
+        ;;
+    stop)
+        log_message "Sample Package web interface stopped"
+        # No process to stop - web interface only
+        exit 0
+        ;;
+    status)
+        echo "Sample Package web interface is active"
+        exit 0
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status}"
+        exit 1
+        ;;
+esac
