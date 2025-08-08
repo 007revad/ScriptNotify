@@ -1,27 +1,20 @@
+// System Information Viewer - Main JavaScript
+// Handles API communication and UI updates
+
 document.addEventListener('DOMContentLoaded', () => {
-    const optionSelect = document.getElementById('optionSelect');
-    const runBtn = document.getElementById('runBtn');
-    const status = document.getElementById('status');
-    const output = document.getElementById('output');
     const systemInfo = document.getElementById('systemInfo');
 
-    function parseSystemInfo(data) {
-        if (!data) return {};
-        const info = {};
-        data.split('\n').forEach(line => {
-            const colonIndex = line.indexOf(': ');
-            if (colonIndex !== -1) {
-                const key = line.substring(0, colonIndex).trim();
-                const value = line.substring(colonIndex + 2).trim();
-                info[key] = value;
-            }
-        });
-        return info;
-    }
-
+    /**
+     * Make API call to backend CGI script
+     * @param {string} action - API action to perform
+     * @param {object} params - Additional parameters
+     * @returns {Promise} - Promise resolving to JSON response
+     */
     function callAPI(action, params = {}) {
         const urlParams = new URLSearchParams();
         urlParams.append('action', action);
+        
+        // Add any additional parameters
         Object.keys(params).forEach(key => urlParams.append(key, params[key]));
 
         return fetch('api.cgi', {
@@ -35,33 +28,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Load and display system information
+     * Updates the systemInfo element with current system data
+     */
     function loadSystemInfo() {
-        systemInfo.innerHTML = '<span style="color: #0066cc;">Loading system information...</span>';
+        systemInfo.innerHTML = '<span class="loading">Loading system information...</span>';
 
         callAPI('info')
             .then(data => {
                 if (data.success) {
                     let infoObj = {};
                     try {
+                        // Parse the JSON result from API
                         infoObj = JSON.parse(data.result);
                     } catch (e) {
                         console.error('Failed to parse system info:', e);
+                        infoObj = {};
                     }
+                    
+                    // Display system information in grid format
                     systemInfo.innerHTML = `
                         <strong>MODEL:</strong> <span>${infoObj.MODEL || 'N/A'}</span>
                         <strong>PLATFORM:</strong> <span>${infoObj.PLATFORM || 'N/A'}</span>
-                        <strong>DSM_VERSION:</strong> <span>${infoObj.DSM_VERSION || 'N/A'}</span>
-                        <strong>Update:</strong> <span>${infoObj.Update || 'N/A'}</span>
+                        <strong>DSM VERSION:</strong> <span>${infoObj.DSM_VERSION || 'N/A'}</span>
+                        <strong>UPTIME:</strong> <span>${infoObj.Update || 'N/A'}</span>
                     `;
                 } else {
-                    systemInfo.innerHTML = `<span style="color: red;">Failed to load system information: ${data.message || 'Unknown error'}</span>`;
+                    // Display error message if API call failed
+                    systemInfo.innerHTML = `<span class="error">Failed to load system information: ${data.message || 'Unknown error'}</span>`;
                 }
             })
             .catch(error => {
-                systemInfo.innerHTML = `<span style="color: red;">Error loading system information: ${error.message}</span>`;
+                // Display error message if network request failed
+                systemInfo.innerHTML = `<span class="error">Error loading system information: ${error.message}</span>`;
+                console.error('API Error:', error);
             });
     }
 
+    // Initial load of system information
     loadSystemInfo();
+    
+    // Auto-refresh system information every 30 seconds
+    setInterval(loadSystemInfo, 30000);
 });
-//
