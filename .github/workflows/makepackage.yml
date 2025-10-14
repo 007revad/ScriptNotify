@@ -20,7 +20,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
             - name: Synology Package Builder Github Action
-              uses: tomgrv/synology-package-builder@v2.1.0
+              uses: tomgrv/synology-package-builder@v1.3.0
               with:
                   dsm: ${{ matrix.dsm }}
                   arch: ${{ matrix.arch }}
